@@ -12,28 +12,42 @@ describe('levelSandbox/Block', () => {
       previousBlockHash: ''
     });
   });
+
+  it('should validate a block', async () => {
+    const block = new Block('test');
+    block.hash = block.generateHash();
+    const isValid = Block.validate(block);
+    expect(isValid).toBeTruthy();
+  });
+
+  it('should invalidate a block', async () => {
+    const invalidBlock = new Block('teste');
+    const isValid = Block.validate(invalidBlock);
+    expect(isValid).toBeFalsy();
+  });
 });
 
 describe('levelSandbox/Blockchain', () => {
   let blockchain;
 
   beforeEach(async () => {
-    blockchain = await Blockchain.create();
+    blockchain = new Blockchain();
   });
 
   afterEach(async () => {
     level.__clear__();
   });
 
-  it('should create a block chain with genesis block', async () => {
+  it('should create the genesis block', async () => {
+    await blockchain.generateGenesisBlock();
     const chain = await blockchain.getChain();
-    expect(chain).toHaveLength(1);
     expect(chain[0].body).toBe('First block in the chain - Genesis block');
   });
 
   it('should add a new block to the blockchain', async () => {
     const block = await blockchain.addBlock(new Block('test01'));
     const chain = await blockchain.getChain();
+    expect(chain).toHaveLength(2);
     expect(chain).toContainEqual(block);
     expect(block.previousBlockHash).toBe(chain[0].hash);
   });
@@ -58,18 +72,6 @@ describe('levelSandbox/Blockchain', () => {
     expect(choosedBlock).toEqual(block);
   });
 
-  it('should validate a block', async () => {
-    const block = await blockchain.addBlock(new Block('test'));
-    const isValid = Blockchain.validateRawBlock(block);
-    expect(isValid).toBeTruthy();
-  });
-
-  it('should invalidate a block', async () => {
-    const invalidBlock = new Block('teste');
-    const isValid = Blockchain.validateRawBlock(invalidBlock);
-    expect(isValid).toBeFalsy();
-  });
-
   it('should validate a block in the blockchain', async () => {
     await blockchain.addBlock(new Block('test'));
     const isValid = await blockchain.validateBlock(1);
@@ -86,15 +88,28 @@ describe('levelSandbox/Blockchain', () => {
   it('should validate the entire blockchain', async () => {
     await blockchain.addBlock(new Block('test01'));
     await blockchain.addBlock(new Block('test02'));
-    const isValid = await blockchain.validateChain();
-    expect(isValid).toBeTruthy();
+    const status = await blockchain.validateChain();
+    expect(status.isValid).toBeTruthy();
   });
 
-  it('should invalidate the entire blockchain', async () => {
+  it('should invalidate the entire blockchain by invalid hash', async () => {
     await blockchain.addBlock(new Block('test01'));
     await blockchain.addBlock(new Block('test02'));
-    await level().put(1, JSON.stringify(new Block('test')));
-    const isValid = await blockchain.validateChain();
-    expect(isValid).toBeFalsy();
+    const block = new Block('test');
+    await level().put(1, JSON.stringify(block));
+    const status = await blockchain.validateChain();
+    expect(status.isValid).toBeFalsy();
+    expect(status.invalidBlocks).toContainEqual(block);
+  });
+
+  it('should invalidate the entire blockchain by invalid previous hash', async () => {
+    const block = await blockchain.addBlock(new Block('test01'));
+    await blockchain.addBlock(new Block('test02'));
+    block.previousHash = '';
+    block.hash = block.generateHash();
+    await level().put(1, JSON.stringify(block));
+    const status = await blockchain.validateChain();
+    expect(status.isValid).toBeFalsy();
+    expect(status.invalidBlocks).toContainEqual(block);
   });
 });

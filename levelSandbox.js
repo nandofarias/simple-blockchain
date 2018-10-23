@@ -8,7 +8,11 @@ async function put(key, value) {
 
 async function get(key) {
   const data = await db.get(key);
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    return data;
+  }
 }
 
 async function getAll() {
