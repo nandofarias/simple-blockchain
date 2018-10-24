@@ -7,10 +7,11 @@ async function put(key, value) {
 }
 
 async function get(key) {
-  const data = await db.get(key);
   try {
+    const data = await db.get(key);
     return JSON.parse(data);
-  } catch (e) {
+  } catch (error) {
+    if (error.name === 'NotFoundError') return null;
     return data;
   }
 }
