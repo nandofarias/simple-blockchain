@@ -4,12 +4,15 @@
   "description": "Blockchain has the potential to change the way that the world approaches data. Develop Blockchain skills by understanding the data model behind Blockchain by developing your own simplified private blockchain.",
   "main": "levelSandbox.js",
   "scripts": {
-    "test": "jest --watch --runInBand ."
+    "test": "jest --watch --runInBand .",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
+    "hapi": "^17.6.0",
+    "joi": "^14.0.1",
     "level": "^4.0.0"
   },
   "devDependencies": {

@@ -1,35 +1,6 @@
-const SHA256 = require('crypto-js/sha256');
-const levelDB = require('./levelSandbox');
+const Block = require('./Block');
+const levelDB = require('../database/level');
 const CHAIN_STATUS = 'CHAIN_STATUS';
-
-class Block {
-  constructor(data) {
-    this.hash = '';
-    this.height = 0;
-    this.body = data;
-    this.time = 0;
-    this.previousBlockHash = '';
-  }
-
-  static generateHash(block) {
-    return SHA256(JSON.stringify({ ...block, hash: '' })).toString();
-  }
-
-  static validate(block) {
-    const blockHash = block.hash;
-    const validBlockHash = Block.generateHash(block);
-    return blockHash === validBlockHash;
-  }
-
-  generateHash() {
-    return Block.generateHash(this);
-  }
-
-  validate() {
-    return Block.validate(this);
-  }
-}
-
 class Blockchain {
   async generateGenesisBlock() {
     const blockHeight = await this.getBlockHeight();
@@ -91,7 +62,4 @@ class Blockchain {
   }
 }
 
-module.exports = {
-  Block,
-  Blockchain
-};
+module.exports = Blockchain;

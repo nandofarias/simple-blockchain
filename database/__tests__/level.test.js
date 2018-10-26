@@ -1,4 +1,4 @@
-const db = require('./levelSandbox');
+const db = require('../level');
 const level = require('level');
 
 describe('./levelSandbox', () => {

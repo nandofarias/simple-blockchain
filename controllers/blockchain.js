@@ -1,0 +1,53 @@
+const Blockchain = require('../models/Blockchain');
+const Block = require('../models/Block');
+const Joi = require('joi');
+const controller = async server => {
+  const blockchain = new Blockchain();
+  await blockchain.generateGenesisBlock();
+
+  server.route({
+    method: 'GET',
+    path: '/block/{blockHeight}',
+    handler: async (request, h) => {
+      const { blockHeight } = request.params;
+      const block = await blockchain.getBlock(blockHeight);
+      if (!block)
+        return h
+          .response({
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Block was not found'
+          })
+          .code(404);
+      return block;
+    },
+    options: {
+      validate: {
+        params: {
+          blockHeight: Joi.number()
+            .integer()
+            .min(0)
+        }
+      }
+    }
+  });
+
+  server.route({
+    method: 'POST',
+    path: '/block',
+    handler: async (request, h) => {
+      const { data } = request.payload;
+      const block = await blockchain.addBlock(new Block(data));
+      return h.response(block).code(201);
+    },
+    options: {
+      validate: {
+        payload: {
+          data: Joi.string().required()
+        }
+      }
+    }
+  });
+};
+
+module.exports = controller;

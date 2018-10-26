@@ -7,8 +7,9 @@ async function put(key, value) {
 }
 
 async function get(key) {
+  let data;
   try {
-    const data = await db.get(key);
+    data = await db.get(key);
     return JSON.parse(data);
   } catch (error) {
     if (error.name === 'NotFoundError') return null;
