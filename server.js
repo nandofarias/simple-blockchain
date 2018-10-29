@@ -10,6 +10,7 @@ async function start() {
     await blockchainController(server);
 
     await server.start();
+    console.log('Server running at:', server.info.uri);
   } catch (err) {
     process.exit(1);
   }

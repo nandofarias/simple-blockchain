@@ -7,6 +7,29 @@ const controller = async server => {
 
   server.route({
     method: 'GET',
+    path: '/',
+    handler: () => {
+      const help = `
+  <pre>
+  Welcome to the Simple Blockchain API
+
+  The following endpoints are available:
+  POST /block
+    USAGE:
+      Add a new block.
+    PARAMS:
+      body - String
+  GET /block/:blockHeight
+    USAGE:
+      Get the details of a block.
+ </pre>
+  `;
+      return help;
+    }
+  });
+
+  server.route({
+    method: 'GET',
     path: '/block/{blockHeight}',
     handler: async (request, h) => {
       const { blockHeight } = request.params;
@@ -36,14 +59,14 @@ const controller = async server => {
     method: 'POST',
     path: '/block',
     handler: async (request, h) => {
-      const { data } = request.payload;
-      const block = await blockchain.addBlock(new Block(data));
+      const { body } = request.payload;
+      const block = await blockchain.addBlock(new Block(body));
       return h.response(block).code(201);
     },
     options: {
       validate: {
         payload: {
-          data: Joi.string().required()
+          body: Joi.string().required()
         }
       }
     }

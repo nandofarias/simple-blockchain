@@ -24,6 +24,15 @@ npm install
 npm start
 ```
 
+## API Endpoint
+
+The following endpoints are available:
+
+| Endpoints                 | Usage                       | Params              |
+| ------------------------- | --------------------------- | ------------------- |
+| `GET /block/:blockHeight` | Get the details of a block. |                     |
+| `POST /block`             | Add a new block.            | **body** - [String] |
+
 ## Running the tests
 
 This project make use of jest platform for unit tests. To run the tests, follow the instructions bellow:
