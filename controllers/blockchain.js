@@ -11,7 +11,7 @@ const controller = async server => {
     handler: async (request, h) => {
       const { blockHeight } = request.params;
       const block = await blockchain.getBlock(blockHeight);
-      if (!block)
+      if (!block) {
         return h
           .response({
             statusCode: 404,
@@ -19,6 +19,7 @@ const controller = async server => {
             message: 'Block was not found'
           })
           .code(404);
+      }
       return block;
     },
     options: {
