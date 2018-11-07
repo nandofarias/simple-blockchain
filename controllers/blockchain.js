@@ -37,14 +37,20 @@ const controller = async server => {
     method: 'POST',
     path: '/block',
     handler: async (request, h) => {
-      const { body } = request.payload;
-      const block = await blockchain.addBlock(new Block(body));
+      const block = await blockchain.addBlock(new Block(request.payload));
       return h.response(block).code(201);
     },
     options: {
       validate: {
         payload: {
-          body: Joi.string().required()
+          address: Joi.string().required(),
+          star: {
+            dec: Joi.string().required(),
+            ra: Joi.string().required(),
+            story: Joi.string().required(),
+            mag: Joi.number(),
+            cons: Joi.string()
+          }
         }
       }
     }
