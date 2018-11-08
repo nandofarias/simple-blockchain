@@ -1,5 +1,5 @@
 const Hapi = require('hapi');
-const defaultController = require('./controllers/default');
+const docsController = require('./controllers/docs');
 const blockchainController = require('./controllers/blockchain');
 const walletController = require('./controllers/wallet');
 async function start() {
@@ -9,7 +9,7 @@ async function start() {
       port: 8000
     });
 
-    defaultController(server);
+    docsController(server);
     walletController(server);
     blockchainController(server);
 

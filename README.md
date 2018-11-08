@@ -28,10 +28,14 @@ npm start
 
 The following endpoints are available:
 
-| Endpoints                 | Usage                       | Params              |
-| ------------------------- | --------------------------- | ------------------- |
-| `GET /block/:blockHeight` | Get the details of a block. |                     |
-| `POST /block`             | Add a new block.            | **body** - [String] |
+| Endpoints                          | Usage                       | Params                                                                                                                                                                              |
+| ---------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /block/[blockHeight]`         | Get the details of a block. |                                                                                                                                                                                     |
+| `GET /stars/address:[address]`     | Add a new block.            |                                                                                                                                                                                     |
+| `GET /stars/hash:[hash]`           | Add a new block.            |                                                                                                                                                                                     |
+| `POST /block`                      | Add a new block.            | **address** - [String] <br> **star** - [Object] <br> - **dec** - [String] <br> - **ra** - [String] <br> - **story** - [String] <br> - **mag** - [Number] <br> - **cons** - [String] |
+| `POST /requestValidation`          | Add a new block.            | **address** - [String]                                                                                                                                                              |
+| `POST /message-signature/validate` | Add a new block.            | **address** - [String] <br> **signature** - [String]                                                                                                                                |
 
 ## Running the tests
 
