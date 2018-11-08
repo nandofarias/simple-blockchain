@@ -37,6 +37,8 @@ const controller = async server => {
     method: 'POST',
     path: '/block',
     handler: async (request, h) => {
+      const body = request.payload;
+      body.star.story = Buffer.from(request.payload.star.story).toString('hex');
       const block = await blockchain.addBlock(new Block(request.payload));
       return h.response(block).code(201);
     },
@@ -47,7 +49,10 @@ const controller = async server => {
           star: {
             dec: Joi.string().required(),
             ra: Joi.string().required(),
-            story: Joi.string().required(),
+            story: Joi.string()
+              .regex(/^[\x00-\x7F]*$/)
+              .max(250)
+              .required(),
             mag: Joi.number(),
             cons: Joi.string()
           }
