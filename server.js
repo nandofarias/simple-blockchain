@@ -11,7 +11,7 @@ async function start() {
 
     defaultController(server);
     walletController(server);
-    await blockchainController(server);
+    blockchainController(server);
 
     await server.start();
     console.log('Server running at:', server.info.uri);

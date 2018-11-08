@@ -5,7 +5,14 @@ class Blockchain {
   async generateGenesisBlock() {
     const blockHeight = await this.getBlockHeight();
     if (blockHeight === -1) {
-      const genesis = new Block('First block in the chain - Genesis block');
+      const genesis = new Block({
+        address: 'genesis',
+        star: {
+          dec: "-26° 29' 24.9",
+          ra: '16h 29m 1.0s',
+          story: '5265676973746572207468652066697273742073746172'
+        }
+      });
       genesis.time = Math.floor(Date.now() / 1000);
       genesis.hash = genesis.generateHash();
       await levelDB.put(genesis.height, genesis);
@@ -17,6 +24,7 @@ class Blockchain {
     await this.generateGenesisBlock();
     const previousBlock = await this.getLastBlock();
 
+    block.body.star.story = Buffer.from(block.body.star.story).toString('hex');
     block.height = previousBlock.height + 1;
     block.time = Math.floor(Date.now() / 1000);
     block.previousBlockHash = previousBlock.hash;
@@ -37,7 +45,12 @@ class Blockchain {
   }
 
   async getBlock(blockHeight) {
-    return levelDB.get(blockHeight);
+    const block = await levelDB.get(blockHeight);
+    block.body.star.storyDecoded = Buffer.from(
+      block.body.star.story,
+      'hex'
+    ).toString();
+    return block;
   }
   async getChain() {
     const database = await levelDB.getAll();
