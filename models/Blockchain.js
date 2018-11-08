@@ -46,11 +46,35 @@ class Blockchain {
 
   async getBlock(blockHeight) {
     const block = await levelDB.get(blockHeight);
+    if (!block) return null;
     block.body.star.storyDecoded = Buffer.from(
       block.body.star.story,
       'hex'
     ).toString();
     return block;
+  }
+
+  async getBlockByHash(hash) {
+    const block = await levelDB.getByHash(hash);
+    if (!block) return null;
+    block.body.star.storyDecoded = Buffer.from(
+      block.body.star.story,
+      'hex'
+    ).toString();
+    return block;
+  }
+
+  async getBlocksByAddress(address) {
+    const blocks = await levelDB.getByAddress(address);
+    if (!blocks || blocks.length === 0) return null;
+    return blocks.map(block => {
+      const newBlock = Object.assign({}, block);
+      newBlock.body.star.storyDecoded = Buffer.from(
+        block.body.star.story,
+        'hex'
+      ).toString();
+      return newBlock;
+    });
   }
   async getChain() {
     const database = await levelDB.getAll();

@@ -17,6 +17,30 @@ async function get(key) {
   }
 }
 
+async function getByHash(hash) {
+  return new Promise((resolve, reject) => {
+    db.createReadStream()
+      .on('data', item => {
+        const block = JSON.parse(item.value);
+        if (block.hash === hash) resolve(block);
+      })
+      .on('error', error => reject(error))
+      .on('close', () => resolve(null));
+  });
+}
+async function getByAddress(address) {
+  return new Promise((resolve, reject) => {
+    const data = [];
+    db.createReadStream()
+      .on('data', item => {
+        const block = JSON.parse(item.value);
+        if (block.body && block.body.address === address) data.push(block);
+      })
+      .on('error', error => reject(error))
+      .on('close', () => resolve(data));
+  });
+}
+
 async function getAll() {
   return new Promise((resolve, reject) => {
     const data = [];
@@ -30,5 +54,7 @@ async function getAll() {
 module.exports = {
   put,
   get,
+  getByHash,
+  getByAddress,
   getAll
 };
