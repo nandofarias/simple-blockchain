@@ -2,6 +2,7 @@ const Blockchain = require('../models/Blockchain');
 const Block = require('../models/Block');
 const Joi = require('joi');
 const blockchain = new Blockchain();
+const Wallet = require('../models/Wallet');
 
 const controller = server => {
   server.route({
@@ -89,6 +90,16 @@ const controller = server => {
     path: '/block',
     handler: async (request, h) => {
       const body = request.payload;
+      const wallet = new Wallet(body.address);
+      if (!wallet.hasValidRequest()) {
+        return h
+          .response({
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Valid request was not found'
+          })
+          .code(404);
+      }
       const block = await blockchain.addBlock(new Block(body));
       return h.response(block).code(201);
     },

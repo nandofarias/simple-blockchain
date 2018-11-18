@@ -1,5 +1,6 @@
 const bitcoinMessage = require('bitcoinjs-message');
 const mempool = require('memory-cache');
+const mempoolValid = new mempool.Cache();
 
 class Wallet {
   constructor(address) {
@@ -8,6 +9,14 @@ class Wallet {
 
   getValidation() {
     return mempool.get(this.address);
+  }
+
+  hasValidRequest() {
+    return mempoolValid.get(this.address);
+  }
+
+  deleteValidRequest() {
+    return mempoolValid.del(this.address);
   }
 
   requestValidation() {
@@ -43,6 +52,10 @@ class Wallet {
       );
     } catch (error) {
       console.log(error);
+    }
+    if (isValid) {
+      mempool.del(this.address);
+      mempoolValid.put(this.address, true);
     }
     return {
       registerStar: isValid,

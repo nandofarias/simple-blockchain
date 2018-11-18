@@ -1,4 +1,5 @@
 const Block = require('./Block');
+const Wallet = require('./Wallet');
 const levelDB = require('../database/level');
 const CHAIN_STATUS = 'CHAIN_STATUS';
 class Blockchain {
@@ -23,6 +24,7 @@ class Blockchain {
   async addBlock(block) {
     await this.generateGenesisBlock();
     const previousBlock = await this.getLastBlock();
+    const wallet = new Wallet(block.body.address);
 
     block.body.star.story = Buffer.from(block.body.star.story).toString('hex');
     block.height = previousBlock.height + 1;
@@ -32,6 +34,7 @@ class Blockchain {
 
     await levelDB.put(block.height, block);
     await levelDB.put(CHAIN_STATUS, { blockHeight: block.height });
+    wallet.deleteValidRequest();
     return block;
   }
   async getBlockHeight() {

@@ -6,7 +6,7 @@ const keyPair = bitcoin.ECPair.fromWIF(
 );
 const address = keyPair.getAddress().toString();
 const privateKey = keyPair.d.toBuffer(32);
-const message = '1MG4gaCv1eZ5TfsM35MrLdJtUqzRYWghSH:1542498466:starRegistry';
+const message = '1MG4gaCv1eZ5TfsM35MrLdJtUqzRYWghSH:1542502125:starRegistry';
 
 const signature = bitcoinMessage.sign(message, privateKey, keyPair.compressed);
 console.log(address);
