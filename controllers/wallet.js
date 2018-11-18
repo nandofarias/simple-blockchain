@@ -1,7 +1,5 @@
 const Wallet = require('../models/Wallet');
 const Joi = require('joi');
-const mempool = require('memory-cache');
-
 const controller = server => {
   server.route({
     method: 'POST',
@@ -10,7 +8,6 @@ const controller = server => {
       const { address } = request.payload;
       const wallet = new Wallet(address);
       const validation = wallet.requestValidation();
-      mempool.put(address, validation, validation.validationWindow * 1000);
       return validation;
     },
     options: {
@@ -27,7 +24,8 @@ const controller = server => {
     path: '/message-signature/validate',
     handler: (request, h) => {
       const { address, signature } = request.payload;
-      const validation = mempool.get(address);
+      const wallet = new Wallet(address);
+      const validation = wallet.getValidation();
       if (!validation) {
         return h
           .response({
@@ -38,7 +36,6 @@ const controller = server => {
           })
           .code(404);
       }
-      const wallet = new Wallet(address);
       const response = wallet.validateMessageSignature(validation, signature);
       return response;
     },
