@@ -1,5 +1,5 @@
 const Wallet = require('../models/Wallet');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const controller = server => {
   server.route({
     method: 'POST',
@@ -12,9 +12,9 @@ const controller = server => {
     },
     options: {
       validate: {
-        payload: {
+        payload: Joi.object({
           address: Joi.string().required()
-        }
+        })
       }
     }
   });
@@ -41,10 +41,10 @@ const controller = server => {
     },
     options: {
       validate: {
-        payload: {
+        payload: Joi.object({
           address: Joi.string().required(),
           signature: Joi.string().required()
-        }
+        })
       }
     }
   });

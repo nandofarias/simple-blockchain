@@ -1,6 +1,6 @@
 const Blockchain = require('../models/Blockchain');
 const Block = require('../models/Block');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const blockchain = new Blockchain();
 const Wallet = require('../models/Wallet');
 
@@ -24,11 +24,11 @@ const controller = server => {
     },
     options: {
       validate: {
-        params: {
+        params: Joi.object({
           blockHeight: Joi.number()
             .integer()
             .min(0)
-        }
+        })
       }
     }
   });
@@ -52,9 +52,9 @@ const controller = server => {
     },
     options: {
       validate: {
-        params: {
+        params: Joi.object({
           address: Joi.string().required()
-        }
+        })
       }
     }
   });
@@ -78,9 +78,9 @@ const controller = server => {
     },
     options: {
       validate: {
-        params: {
+        params: Joi.object({
           hash: Joi.string().required()
-        }
+        })
       }
     }
   });
@@ -105,7 +105,7 @@ const controller = server => {
     },
     options: {
       validate: {
-        payload: {
+        payload: Joi.object({
           address: Joi.string().required(),
           star: {
             dec: Joi.string().required(),
@@ -117,7 +117,7 @@ const controller = server => {
             mag: Joi.number(),
             cons: Joi.string()
           }
-        }
+        })
       }
     }
   });
