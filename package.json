@@ -14,7 +14,7 @@
     "url": "https://github.com/nandofarias/simple-blockchain"
   },
   "dependencies": {
-    "@hapi/hapi": "^19.1.0",
+    "@hapi/hapi": "^19.1.1",
     "@hapi/joi": "^17.1.0",
     "bitcoinjs-lib": "^3.3.2",
     "bitcoinjs-message": "^2.0.0",
